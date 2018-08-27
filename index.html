@@ -1,0 +1,56 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/php; charset=utf-8" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <title>My Chat app</title>
+  </head>
+  <body>
+    <h2>Woooo lets chat</h2>
+    <h3>What would you like to say?</h3>
+    <form id="chat-form">
+      <div>
+        Comment: 
+        <textarea id="chat"></textarea>
+      </div>
+      <input type="submit" value="Send it!">
+    </form>
+    <hr>
+    <h3>Ongoing Conversation</h3>
+    <div id="results">
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    $(document).ready(function () {
+        console.log('loaded');
+        $('#chat-form').submit(function (e) {
+          e.preventDefault();
+          
+          var message = $('#chat').val();
+          if(!($('#chat').val())){
+            return;
+          }
+          console.log('form was clicked, you are saying',message);
+
+          socket.emit('chat message', message);
+
+          $('#chat').val('');
+        });
+    });
+    socket.on('chat message', function(msg){
+      printMessage(msg);
+    });
+    
+    function printMessage(msg) {
+      var p = $('<p>').append(msg);
+      $('#results').append(p);
+    }
+  </script>
+  <footer>
+  </footer>
+</html>
